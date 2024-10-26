@@ -6,6 +6,7 @@ import io.cucumber.java.en.Then;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 
@@ -25,8 +26,7 @@ public class parte1Step {
 
     @When("eu envio uma requisição POST para {string}")
     public void eu_envio_uma_requisicao_post_para(String endpoint) {
-        response = RestAssured
-                .given()
+        response = given()
                 .contentType(contentType)
                 .body(requestBody)
                 .when()
@@ -78,8 +78,7 @@ public class parte1Step {
 
     @When("eu envio uma requisição POST para gerar token {string}")
     public void eu_envio_uma_requisição_post_para_gerar_token(String endpoint) {
-        response = RestAssured
-                .given()
+        response = given()
                 .contentType(contentType)
                 .body(requestBody)
                 .when()
@@ -147,8 +146,7 @@ public class parte1Step {
 
     @When("eu envio uma requisição POST para confirmar o token {string}")
     public void eu_envio_uma_requisição_post_para_confirmar_o_token(String endpoint) {
-        response = RestAssured
-                .given()
+        response = given()
                 .contentType(contentType)
                 .body(requestBody)
                 .when()
@@ -171,6 +169,17 @@ public class parte1Step {
     public void que_eu_tenha_um_payload_sem_usuario_valido_para_confirmar_sua_autorizacao() {
         requestBody = parte1Page.PayloadSemUser();
         System.out.println(requestBody);
+    }
+
+    //Listar Livros Disponiveis
+    @Given("eu envio uma requisição GET para Listar os livros disponiveis {string}")
+    public void eu_envio_uma_requisicao_get_para_listar_os_livros_disponiveis(String url) {
+        response = given()
+                .when()
+                .get(url)
+                .then()
+                .extract()
+                .response();
     }
 }
 

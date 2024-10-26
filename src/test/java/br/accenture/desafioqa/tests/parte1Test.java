@@ -7,8 +7,7 @@ import io.cucumber.junit.CucumberOptions;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = {
-                "src/main/resources/features.desafioqa/parte1/CT007 - Validar Confirmacao Autorizacao de usuario inexistente.feature",
-                "src/main/resources/features.desafioqa/parte1/CT008 - Validar Confirmacao Autorizacao 400BadRequest.feature",
+                "src/main/resources/features.desafioqa/parte1/CT009 - Validar Listar os Livros Disponiveis.feature",
         },
         glue = "br.accenture.desafioqa.parte1",
         dryRun = false,
