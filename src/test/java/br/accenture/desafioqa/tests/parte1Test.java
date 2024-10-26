@@ -7,7 +7,7 @@ import io.cucumber.junit.CucumberOptions;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = {
-                "src/main/resources/features.desafioqa/parte1/CT002 - Validar criar usuario ja existente.feature",
+                "src/main/resources/features.desafioqa/parte1/CT005 - Validar Gerar um Token de acesso com usuario inexistente.feature",
         },
         glue = "br.accenture.desafioqa.parte1",
         dryRun = false,
