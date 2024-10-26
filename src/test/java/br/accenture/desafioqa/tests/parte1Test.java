@@ -7,8 +7,10 @@ import io.cucumber.junit.CucumberOptions;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = {
-                "src/main/resources/features.desafioqa/parte1/CT009 - Validar Listar os Livros Disponiveis.feature",
+                "src/main/resources/features.desafioqa/parte1/CT011 - Listar Detalhes do Usuário com Livros Escolhidos.feature",
+
         },
+
         glue = "br.accenture.desafioqa.parte1",
         dryRun = false,
         plugin = {"pretty", "html:target/cucumber-reports.html"}

@@ -1,5 +1,6 @@
 package br.accenture.desafioqa.parte1;
 
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
@@ -11,12 +12,21 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 
 public class parte1Step {
-
+    private String userId;
+    private String token;
     private String requestBody;
     private String contentType = "application/json";
     private Response response;
 
     private parte1Page parte1Page = new parte1Page();
+
+    @Before
+    public void setUp() {
+        // Limpa os valores antes de cada teste
+        userId = null;
+        token = null;
+        requestBody = null;
+    }
 
     @Given("que eu tenha um payload válido para criação de usuário")
     public void que_eu_tenha_um_payload_valido_para_criacao_de_usuario() {
@@ -180,6 +190,87 @@ public class parte1Step {
                 .then()
                 .extract()
                 .response();
+    }
+
+    // Criação do usuário para alugar livros
+    @Given("que eu tenha um payload válido para criação de usuário para alugar livros")
+    public void que_eu_tenha_um_payload_válido_para_criação_de_usuário_para_alugar_livros() {
+        requestBody = parte1Page.criarPayload(); // Usa o método para criar o payload
+        System.out.println(requestBody);
+
+        String url = "https://demoqa.com/Account/v1/User";
+        Response response = given()
+                .contentType("application/json")
+                .body(requestBody)
+                .when()
+                .post(url)
+                .then()
+                .statusCode(201) // Valida se a criação foi bem-sucedida
+                .extract()
+                .response();
+
+        userId = response.jsonPath().getString("userID");
+    }
+
+    // Geração do token de autorização
+    @When("eu criar o usuário e gerar o token de autorização")
+    public void eu_criar_o_usuário_e_gerar_o_token_de_autorização() {
+        String url = "https://demoqa.com/Account/v1/GenerateToken";
+
+        Response response = given()
+                .contentType("application/json")
+                .body(requestBody) // Reutiliza o requestBody gerado anteriormente
+                .when()
+                .post(url)
+                .then()
+                .statusCode(200) // Valida se o token foi gerado com sucesso
+                .extract()
+                .response();
+
+        token = response.jsonPath().getString("token");
+    }
+
+    // Requisição para alugar dois livros
+    @When("eu enviar uma requisição POST para alugar dois livros com o token e o userId")
+    public void eu_enviar_uma_requisição_post_para_alugar_dois_livros_com_o_token_e_o_user_id() {
+        String url = "https://demoqa.com/BookStore/v1/Books";
+        String requestBody = "{\n" +
+                "  \"userId\": \"" + userId + "\",\n" +
+                "  \"collectionOfIsbns\": [\n" +
+                "    {\"isbn\": \"9781449365035\"},\n" +
+                "    {\"isbn\": \"9781491950296\"}\n" +
+                "  ]\n" +
+                "}";
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .contentType("application/json")
+                .body(requestBody)
+                .when()
+                .post(url)
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+    }
+
+    //Listar Detalhes do Usuário com Livros Escolhidos
+    @Then("eu listar os detalhes do usuário com os livros escolhidos")
+    public void eu_listar_os_detalhes_do_usuário_com_os_livros_escolhidos() {
+        String url = "https://demoqa.com/Account/v1/User/" + userId; // Endpoint para listar detalhes do usuário
+
+        response = given()
+                .header("Authorization", "Bearer " + token) // Adiciona o token se necessário
+                .when()
+                .get(url)
+                .then()
+                .extract()
+                .response();
+
+        System.out.println("Detalhes do usuário: " + response.getBody().asString());
+        // Adicione asserções conforme necessário, por exemplo:
+        response.then().statusCode(200);
+
     }
 }
 
